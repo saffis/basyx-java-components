@@ -34,4 +34,4 @@ ARG MQTT_CONFIG_KEY
 ENV ${MQTT_CONFIG_KEY} "/usr/share/config/mqtt.properties"
 
 # Start the jar
-CMD java -jar "/usr/share/basyxExecutable.jar"
+CMD java -cp /usr/share/lib/*:/usr/share/basyxExecutable.jar org.eclipse.basyx.components.registry.executable.RegistryExecutable
