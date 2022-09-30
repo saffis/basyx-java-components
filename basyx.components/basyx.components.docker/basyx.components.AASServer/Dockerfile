@@ -41,4 +41,4 @@ ARG MQTT_CONFIG_KEY
 ENV ${MQTT_CONFIG_KEY} "/usr/share/config/mqtt.properties"
 
 # Start the jar
-CMD ./wait-for-it-env.sh && java -jar "/usr/share/basyxExecutable.jar"
+CMD ./wait-for-it-env.sh && java -cp /usr/share/lib/*:/usr/share/basyxExecutable.jar org.eclipse.basyx.components.aas.executable.AASServerExecutable
