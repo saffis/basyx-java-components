@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2022 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,22 +22,42 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-
-package org.eclipse.basyx.regression.registry;
+package org.eclipse.basyx.regression.AASServer;
 
 import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
-import org.eclipse.basyx.components.registry.RegistryComponent;
-import org.eclipse.basyx.components.registry.configuration.BaSyxRegistryConfiguration;
-import org.eclipse.basyx.components.registry.configuration.RegistryBackend;
-import org.eclipse.basyx.components.registry.configuration.RegistryEventBackend;
+import org.eclipse.basyx.components.configuration.BaSyxDockerConfiguration;
+import org.junit.BeforeClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TestInMemoryMqttRegistryBackend extends TestMqttRegistryBackend {
+/**
+ * Executes AASServerSuite as integration test for docker
+ * 
+ * @author danish
+ *
+ */
+public class ITAasServer extends AASServerSuite {
+	private static Logger logger = LoggerFactory.getLogger(ITAasServer.class);
+	
+	private static String aasServerUrl;
+	
+	@BeforeClass
+	public static void setUpClass() {
+		logger.info("Running integration test...");
+
+		BaSyxContextConfiguration contextConfig = new BaSyxContextConfiguration();
+		contextConfig.loadFromResource(BaSyxContextConfiguration.DEFAULT_CONFIG_PATH);
+
+		BaSyxDockerConfiguration dockerConfig = new BaSyxDockerConfiguration();
+		dockerConfig.loadFromResource(BaSyxDockerConfiguration.DEFAULT_CONFIG_PATH);
+
+		aasServerUrl = "http://localhost:" + dockerConfig.getHostPort() + contextConfig.getContextPath();
+		
+		logger.info("AAS Server URL for integration test: " + aasServerUrl);
+	}
+
 	@Override
-	public RegistryComponent createRegistryComponent() {
-		BaSyxRegistryConfiguration registryConfig = new BaSyxRegistryConfiguration();
-		registryConfig.setRegistryBackend(RegistryBackend.INMEMORY);
-		registryConfig.setRegistryEvents(RegistryEventBackend.MQTT);
-
-		return new RegistryComponent(new BaSyxContextConfiguration(), registryConfig);
+	protected String getURL() {
+		return aasServerUrl;
 	}
 }
